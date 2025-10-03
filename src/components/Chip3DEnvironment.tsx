@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { RotateCcw, ZoomIn, ZoomOut, Move3d as Move3D } from 'lucide-react';
 import ChipModule from './ChipModule';
-import DataBus from './DataBus';
 import PowerRail from './PowerRail';
 import ModulePopup from './ModulePopup';
 import { useSecureBootState } from '../hooks/useSecureBootState';
+import DataBus3D from "./DataBus3D";
 
 interface Chip3DEnvironmentProps {
   mode: 'normal' | 'tampered';
