@@ -1,0 +1,33 @@
+export function getConnectionPoints(from: any, to: any) {
+  const fromCenter = { x: from.position.x, y: from.position.y };
+  const toCenter = { x: to.position.x, y: to.position.y };
+
+  const dx = toCenter.x - fromCenter.x;
+  const dy = toCenter.y - fromCenter.y;
+
+  const fromHalf = { w: from.size.width / 2, h: from.size.height / 2 };
+  const toHalf = { w: to.size.width / 2, h: to.size.height / 2 };
+
+  // Pick exit edge on source
+  let fromX = fromCenter.x;
+  let fromY = fromCenter.y;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    fromX += dx > 0 ? fromHalf.w : -fromHalf.w;
+  } else {
+    fromY += dy > 0 ? fromHalf.h : -fromHalf.h;
+  }
+
+  // Pick entry edge on target
+  let toX = toCenter.x;
+  let toY = toCenter.y;
+  if (Math.abs(dx) > Math.abs(dy)) {
+    toX -= dx > 0 ? toHalf.w : -toHalf.w;
+  } else {
+    toY -= dy > 0 ? toHalf.h : -toHalf.h;
+  }
+
+  return {
+    from: { x: fromX, y: fromY, z: from.position.z },
+    to: { x: toX, y: toY, z: to.position.z }
+  };
+}
