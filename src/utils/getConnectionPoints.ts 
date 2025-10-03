@@ -1,33 +1,59 @@
-export function getConnectionPoints(from: any, to: any) {
-  const fromCenter = { x: from.position.x, y: from.position.y };
-  const toCenter = { x: to.position.x, y: to.position.y };
+// src/utils/getConnectionPoints.ts
+
+interface Position {
+  x: number;
+  y: number;
+  z: number;
+}
+
+interface Size {
+  width: number;
+  height: number;
+  depth: number;
+}
+
+interface Module {
+  id: string;
+  position: Position;
+  size: Size;
+}
+
+/**
+ * Compute the closest edge-to-edge connection points between two rectangular modules.
+ * This avoids bus lines going through the middle of the modules.
+ */
+export function getConnectionPoints(fromModule: Module, toModule: Module) {
+  const fromCenter = {
+    x: fromModule.position.x,
+    y: fromModule.position.y,
+    z: fromModule.position.z
+  };
+  const toCenter = {
+    x: toModule.position.x,
+    y: toModule.position.y,
+    z: toModule.position.z
+  };
 
   const dx = toCenter.x - fromCenter.x;
   const dy = toCenter.y - fromCenter.y;
 
-  const fromHalf = { w: from.size.width / 2, h: from.size.height / 2 };
-  const toHalf = { w: to.size.width / 2, h: to.size.height / 2 };
-
-  // Pick exit edge on source
-  let fromX = fromCenter.x;
-  let fromY = fromCenter.y;
+  // Pick edge on "from" module
+  let from: Position = { ...fromCenter };
   if (Math.abs(dx) > Math.abs(dy)) {
-    fromX += dx > 0 ? fromHalf.w : -fromHalf.w;
+    // Horizontal connection
+    from.x += dx > 0 ? fromModule.size.width / 2 : -fromModule.size.width / 2;
   } else {
-    fromY += dy > 0 ? fromHalf.h : -fromHalf.h;
+    // Vertical connection
+    from.y += dy > 0 ? fromModule.size.height / 2 : -fromModule.size.height / 2;
   }
 
-  // Pick entry edge on target
-  let toX = toCenter.x;
-  let toY = toCenter.y;
+  // Pick edge on "to" module
+  let to: Position = { ...toCenter };
   if (Math.abs(dx) > Math.abs(dy)) {
-    toX -= dx > 0 ? toHalf.w : -toHalf.w;
+    to.x += dx > 0 ? -toModule.size.width / 2 : toModule.size.width / 2;
   } else {
-    toY -= dy > 0 ? toHalf.h : -toHalf.h;
+    to.y += dy > 0 ? -toModule.size.height / 2 : toModule.size.height / 2;
   }
 
-  return {
-    from: { x: fromX, y: fromY, z: from.position.z },
-    to: { x: toX, y: toY, z: to.position.z }
-  };
+  return { from, to };
 }
