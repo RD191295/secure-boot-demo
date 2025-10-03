@@ -203,7 +203,6 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
         >
           <RotateCcw size={16} />
         </button>
-    
       </div>
      
       {/* 3D Scene Container */}
