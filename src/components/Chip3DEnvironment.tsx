@@ -5,6 +5,7 @@ import DataBus from './DataBus';
 import PowerRail from './PowerRail';
 import ModulePopup from './ModulePopup';
 import { useSecureBootState } from '../hooks/useSecureBootState';
+import { getConnectionPoints } from '../utils/getConnectionPoints';
 
 interface Chip3DEnvironmentProps {
   mode: 'normal' | 'tampered';
