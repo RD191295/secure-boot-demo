@@ -203,12 +203,7 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
         >
           <RotateCcw size={16} />
         </button>
-        <div className="p-2 bg-gray-800 text-white rounded text-xs">
-          <Move3D size={10} className="mx-auto mb-1" />
-          <div>Drag: Rotate</div>
-          <div>Shift+Drag: Pan</div>
-          <div>Wheel: Zoom</div>
-        </div>
+    
       </div>
      
       {/* 3D Scene Container */}
