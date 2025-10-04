@@ -1,10 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls } from '@react-three/drei';
 import ChipModule from './ChipModule';
 import PowerRail from './PowerRail';
 import ModulePopup from './ModulePopup';
-import DataBus3D from './DataBus3D';
 import { useSecureBootState } from '../hooks/useSecureBootState';
 import { MODULES, getModuleById, getBootStatus, Chip3DEnvironmentProps } from './constants';
 
@@ -29,75 +26,47 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
     }
   }), [flags, currentStage]);
 
-  const buses = useMemo(() => [
-    { from: 'bootrom', to: 'bootrom', active: currentStage === 1, visible: currentStage === 1, type: 'control', data: 'ROM Initialization' },
-    { from: 'bootrom', to: 'otp', active: currentStage === 2, visible: currentStage === 2, type: 'control', data: 'Key Request' },
-    { from: 'otp', to: 'bootrom', active: currentStage === 2, visible: currentStage === 2, type: 'data', data: 'Public Key Hash' },
-    { from: 'flash', to: 'bootrom', active: currentStage === 3, visible: currentStage === 3, type: 'data', data: 'Bootloader Binary' },
-    { from: 'bootrom', to: 'crypto', active: currentStage === 4, visible: currentStage === 4, type: 'data', data: 'Hash + Signature' },
-    { from: 'otp', to: 'crypto', active: currentStage === 4, visible: currentStage === 4, type: 'data', data: 'Public Key' },
-    { from: 'crypto', to: 'bootrom', active: currentStage === 5, visible: currentStage === 5, type: 'control', data: mode === 'tampered' ? 'VERIFICATION FAILED' : 'VERIFICATION PASSED' },
-    { from: 'bootrom', to: 'cpu', active: currentStage === 6 && mode === 'normal', visible: currentStage === 6, type: 'control', data: mode === 'tampered' ? 'SAFE MODE' : 'Boot Control' },
-    { from: 'cpu', to: 'cpu', active: currentStage === 7 && mode === 'normal', visible: currentStage === 7, type: 'control', data: mode === 'tampered' ? 'SAFE MODE ACTIVE' : 'OS EXECUTION' }
-  ], [currentStage, mode]);
-
   const bootStatus = getBootStatus(flags, mode, currentStage);
 
   return (
-    <div className="w-full h-screen bg-gray-900">
-      <Canvas camera={{ position: [0, 0, 800], fov: 45 }}>
-        {/* Lights */}
-        <ambientLight intensity={0.5} />
-        <pointLight position={[500, 500, 500]} />
-
-        {/* Orbit Controls */}
-        <OrbitControls enablePan enableRotate enableZoom zoomSpeed={1.2} panSpeed={0.5} />
-
-        {/* Modules */}
-        {modules.map(module => (
-          <ChipModule
-            key={module.id}
-            {...module}
-            mode={mode}
-            showInternals={showInternals}
-            onClick={() => setSelectedModule(module.id)}
-            currentStage={currentStage}
-            registers={registers}
-            memory={memory}
-            flags={flags}
-          />
-        ))}
-
-        {/* Power Rails */}
-        {currentStage > 0 && (
-          <PowerRail
-            id="power-5v"
-            name="5V Main Power"
-            voltage={5.0}
-            position={{ x: -400, y: -100, z: 10 }}
-            isActive={flags.powerGood}
-            onClick={() => {}}
-          />
-        )}
-
-        {/* Data Buses */}
-        {buses.map((bus, idx) => {
-          const fromModule = getModuleById(bus.from, modules);
-          const toModule = getModuleById(bus.to, modules);
-          if (!fromModule || !toModule || !bus.visible) return null;
-
-          return (
-            <DataBus3D
-              key={idx}
-              from={fromModule.position}
-              to={toModule.position}
-              type={bus.type}
-              isActive={bus.active}
-              animationSpeed={animationSpeed}
+    <div className="w-full h-screen bg-gray-900 relative overflow-hidden">
+      {/* 3D Scene Container */}
+      <div
+        className="w-full h-full relative"
+        style={{
+          perspective: '1200px',
+          perspectiveOrigin: '50% 50%'
+        }}
+      >
+        {/* Chip Modules */}
+        <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
+          {modules.map(module => (
+            <ChipModule
+              key={module.id}
+              {...module}
+              mode={mode}
+              showInternals={showInternals}
+              onClick={() => setSelectedModule(module.id)}
+              currentStage={currentStage}
+              registers={registers}
+              memory={memory}
+              flags={flags}
             />
-          );
-        })}
-      </Canvas>
+          ))}
+
+          {/* Power Rails */}
+          {currentStage > 0 && (
+            <PowerRail
+              id="power-5v"
+              name="5V Main Power"
+              voltage={5.0}
+              position={{ x: -400, y: -100, z: 10 }}
+              isActive={flags.powerGood}
+              onClick={() => {}}
+            />
+          )}
+        </div>
+      </div>
 
       {/* Module Popup */}
       {selectedModule && (

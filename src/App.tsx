@@ -169,9 +169,6 @@ function App() {
           showInternals={showInternals}
           animationSpeed={animationSpeed}
           currentStage={currentStage}
-          onModeChange={setMode}
-          onInternalsToggle={() => setShowInternals(!showInternals)}
-          onSpeedChange={setAnimationSpeed}
         />
       </div>
     </div>
