@@ -19,10 +19,10 @@ export interface Chip3DEnvironmentProps {
 export const MODULES: Module[] = [
   {
     id: 'pmu',
-    name: 'PMU',
+    name: 'Power Management Unit',
     type: 'pmu',
     position: { x: 50, y: 50, z: 0 },
-    size: { width: 140, height: 100, depth: 20 },
+    size: { width: 210, height: 180, depth: 20 },
     color: 'from-red-800 to-red-600',
     isActive: false,
     description: 'Power Management Unit'
