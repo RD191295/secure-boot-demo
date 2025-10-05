@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import ChipModule from './ChipModule';
-import PowerRail from './PowerRail';
 import ModulePopup from './ModulePopup';
+import PCBTrace from './PCBTrace';
 import { useSecureBootState } from '../hooks/useSecureBootState';
 import { MODULES, getModuleById, getBootStatus, Chip3DEnvironmentProps } from './constants';
 
@@ -26,45 +26,96 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
     }
   }), [flags, currentStage]);
 
+  const traces = useMemo(() => {
+    const getModuleCenter = (id: string) => {
+      const mod = modules.find(m => m.id === id);
+      if (!mod) return { x: 0, y: 0 };
+      return {
+        x: mod.position.x + mod.size.width / 2,
+        y: mod.position.y + mod.size.height / 2
+      };
+    };
+
+    return [
+      { from: 'pmu', to: 'bootrom', active: currentStage >= 1, type: 'power' as const, label: 'Power' },
+      { from: 'pmu', to: 'otp', active: currentStage >= 1, type: 'power' as const, label: 'Power' },
+      { from: 'pmu', to: 'crypto', active: currentStage >= 1, type: 'power' as const, label: 'Power' },
+      { from: 'pmu', to: 'flash', active: currentStage >= 1, type: 'power' as const, label: 'Power' },
+      { from: 'pmu', to: 'cpu', active: currentStage >= 1, type: 'power' as const, label: 'Power' },
+
+      { from: 'bootrom', to: 'otp', active: currentStage === 2, type: 'control' as const, label: 'Key Request' },
+      { from: 'otp', to: 'crypto', active: currentStage === 4, type: 'data' as const, label: 'Public Key' },
+      { from: 'flash', to: 'bootrom', active: currentStage === 3, type: 'data' as const, label: 'Bootloader' },
+      { from: 'bootrom', to: 'crypto', active: currentStage === 4, type: 'data' as const, label: 'Hash+Sig' },
+      { from: 'crypto', to: 'bootrom', active: currentStage === 5, type: 'control' as const, label: mode === 'tampered' ? 'FAIL' : 'PASS' },
+      { from: 'bootrom', to: 'cpu', active: currentStage >= 6 && mode === 'normal', type: 'control' as const, label: 'Boot' },
+    ].map(t => ({
+      ...t,
+      from: getModuleCenter(t.from),
+      to: getModuleCenter(t.to)
+    }));
+  }, [modules, currentStage, mode]);
+
   const bootStatus = getBootStatus(flags, mode, currentStage);
 
   return (
-    <div className="w-full h-screen bg-gray-900 relative overflow-hidden">
-      {/* 3D Scene Container */}
-      <div
-        className="w-full h-full relative"
-        style={{
-          perspective: '1200px',
-          perspectiveOrigin: '50% 50%'
-        }}
-      >
-        {/* Chip Modules */}
-        <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
-          {modules.map(module => (
-            <ChipModule
-              key={module.id}
-              {...module}
-              mode={mode}
-              showInternals={showInternals}
-              onClick={() => setSelectedModule(module.id)}
-              currentStage={currentStage}
-              registers={registers}
-              memory={memory}
-              flags={flags}
-            />
-          ))}
+    <div className="w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
+      {/* PCB Background Pattern */}
+      <div className="absolute inset-0 opacity-10" style={{
+        backgroundImage: `
+          linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
+        `,
+        backgroundSize: '20px 20px'
+      }} />
 
-          {/* Power Rails */}
-          {currentStage > 0 && (
-            <PowerRail
-              id="power-5v"
-              name="5V Main Power"
-              voltage={5.0}
-              position={{ x: -400, y: -100, z: 10 }}
-              isActive={flags.powerGood}
-              onClick={() => {}}
-            />
-          )}
+      {/* Main PCB Container */}
+      <div className="absolute inset-0 flex items-center justify-center p-8">
+        <div className="relative" style={{ width: '700px', height: '500px' }}>
+          {/* SVG Layer for PCB Traces */}
+          <svg
+            className="absolute inset-0 pointer-events-none"
+            style={{ width: '100%', height: '100%' }}
+            viewBox="0 0 700 500"
+          >
+            <defs>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+
+            {traces.map((trace, idx) => (
+              <PCBTrace
+                key={idx}
+                from={trace.from}
+                to={trace.to}
+                isActive={trace.active}
+                type={trace.type}
+                label={trace.label}
+              />
+            ))}
+          </svg>
+
+          {/* Chip Modules Layer */}
+          <div className="absolute inset-0">
+            {modules.map(module => (
+              <ChipModule
+                key={module.id}
+                {...module}
+                mode={mode}
+                showInternals={showInternals}
+                onClick={() => setSelectedModule(module.id)}
+                currentStage={currentStage}
+                registers={registers}
+                memory={memory}
+                flags={flags}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -83,8 +134,8 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
       )}
 
       {/* Boot Status */}
-      <div className="fixed top-4 left-4 z-20">
-        <div className={`px-4 py-2 rounded-lg text-white font-semibold ${bootStatus.color}`}>
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+        <div className={`px-6 py-3 rounded-lg text-white font-semibold shadow-lg ${bootStatus.color}`}>
           {bootStatus.text}
         </div>
       </div>

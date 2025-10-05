@@ -115,12 +115,11 @@ const ChipModule: React.FC<ChipModuleProps> = ({
 
   return (
     <div
-      className="absolute cursor-pointer transition-all duration-500 ease-out"
+      className="absolute cursor-pointer transition-all duration-300 ease-out z-10"
       style={{
-        left: `calc(50% + ${position.x}px)`,
-        top: `calc(50% + ${position.y}px)`,
-        transform: `translateZ(${position.z}px) ${isHovered ? 'scale(1.05)' : 'scale(1)'}`,
-        transformStyle: 'preserve-3d'
+        left: `${position.x}px`,
+        top: `${position.y}px`,
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
