@@ -68,6 +68,7 @@ const ChipModule3D: React.FC<ChipModule3DProps> = ({
 
   return (
     <group position={[x, y + 0.5, z]}>
+      {/* Main chip package body */}
       <mesh
         ref={meshRef}
         castShadow
@@ -79,13 +80,110 @@ const ChipModule3D: React.FC<ChipModule3DProps> = ({
       >
         <boxGeometry args={[1, 1, 1]} />
         <meshStandardMaterial
+          color="#1a1a1a"
+          roughness={0.2}
+          metalness={0.1}
+        />
+      </mesh>
+
+      {/* Silicon die on top with colored tint */}
+      <mesh
+        castShadow
+        receiveShadow
+        position={[0, scaleY * 0.52, 0]}
+        scale={[scaleX * 0.85, 1, scaleZ * 0.85]}
+      >
+        <boxGeometry args={[1, 0.05, 1]} />
+        <meshStandardMaterial
           color={getColor()}
           emissive={getEmissiveColor()}
           emissiveIntensity={module.isActive ? 0.5 : 0}
-          roughness={0.4}
-          metalness={0.6}
+          roughness={0.15}
+          metalness={0.8}
         />
       </mesh>
+
+      {/* Bond pad grid on die surface */}
+      {[...Array(5)].map((_, row) =>
+        [...Array(5)].map((_, col) => (
+          <mesh
+            key={`pad-${row}-${col}`}
+            position={[
+              (col - 2) * scaleX * 0.15,
+              scaleY * 0.55,
+              (row - 2) * scaleZ * 0.15,
+            ]}
+          >
+            <boxGeometry args={[scaleX * 0.06, 0.01, scaleZ * 0.06]} />
+            <meshStandardMaterial
+              color="#ffd700"
+              emissive={module.isActive && (row === 2 || col === 2) ? '#ffaa00' : '#000000'}
+              emissiveIntensity={0.3}
+              roughness={0.3}
+              metalness={0.9}
+            />
+          </mesh>
+        ))
+      )}
+
+      {/* Circuit traces on die */}
+      {[...Array(4)].map((_, i) => (
+        <mesh
+          key={`trace-h-${i}`}
+          position={[
+            0,
+            scaleY * 0.54,
+            (i - 1.5) * scaleZ * 0.2,
+          ]}
+        >
+          <boxGeometry args={[scaleX * 0.7, 0.005, scaleZ * 0.02]} />
+          <meshStandardMaterial
+            color={module.isActive ? '#00ffff' : '#333333'}
+            emissive={module.isActive ? '#00aaaa' : '#000000'}
+            emissiveIntensity={0.4}
+            roughness={0.2}
+            metalness={0.8}
+          />
+        </mesh>
+      ))}
+      {[...Array(4)].map((_, i) => (
+        <mesh
+          key={`trace-v-${i}`}
+          position={[
+            (i - 1.5) * scaleX * 0.2,
+            scaleY * 0.54,
+            0,
+          ]}
+        >
+          <boxGeometry args={[scaleX * 0.02, 0.005, scaleZ * 0.7]} />
+          <meshStandardMaterial
+            color={module.isActive ? '#00ffff' : '#333333'}
+            emissive={module.isActive ? '#00aaaa' : '#000000'}
+            emissiveIntensity={0.4}
+            roughness={0.2}
+            metalness={0.8}
+          />
+        </mesh>
+      ))}
+
+      {/* Corner mounting marks */}
+      {[[-1, -1], [1, -1], [-1, 1], [1, 1]].map(([xDir, zDir], idx) => (
+        <mesh
+          key={`corner-${idx}`}
+          position={[
+            xDir * scaleX * 0.4,
+            scaleY * 0.52,
+            zDir * scaleZ * 0.4,
+          ]}
+        >
+          <cylinderGeometry args={[scaleX * 0.05, scaleX * 0.05, 0.02, 16]} />
+          <meshStandardMaterial
+            color="#666666"
+            roughness={0.3}
+            metalness={0.7}
+          />
+        </mesh>
+      ))}
 
       {showInternals && module.isActive && (
         <>
@@ -132,20 +230,58 @@ const ChipModule3D: React.FC<ChipModule3DProps> = ({
         </>
       )}
 
-      {[...Array(4)].map((_, i) => (
-        <mesh
-          key={`pin-${i}`}
-          position={[
-            i < 2 ? -scaleX * 0.55 : scaleX * 0.55,
-            scaleY * 0.3,
-            i % 2 === 0 ? -scaleZ * 0.3 : scaleZ * 0.3,
-          ]}
-          castShadow
-        >
-          <cylinderGeometry args={[0.03, 0.03, scaleY * 0.5, 8]} />
-          <meshStandardMaterial color="#9ca3af" metalness={0.9} roughness={0.2} />
-        </mesh>
-      ))}
+      {/* Lead pins on all four sides */}
+      {[...Array(8)].map((_, i) => {
+        const side = Math.floor(i / 2);
+        const isFirst = i % 2 === 0;
+        let xPos = 0, zPos = 0, rotation: [number, number, number] = [0, 0, 0];
+
+        switch (side) {
+          case 0: // left
+            xPos = -scaleX * 0.5;
+            zPos = isFirst ? -scaleZ * 0.2 : scaleZ * 0.2;
+            rotation = [0, 0, Math.PI / 2];
+            break;
+          case 1: // right
+            xPos = scaleX * 0.5;
+            zPos = isFirst ? -scaleZ * 0.2 : scaleZ * 0.2;
+            rotation = [0, 0, Math.PI / 2];
+            break;
+          case 2: // front
+            xPos = isFirst ? -scaleX * 0.2 : scaleX * 0.2;
+            zPos = -scaleZ * 0.5;
+            rotation = [0, 0, 0];
+            break;
+          case 3: // back
+            xPos = isFirst ? -scaleX * 0.2 : scaleX * 0.2;
+            zPos = scaleZ * 0.5;
+            rotation = [0, 0, 0];
+            break;
+        }
+
+        return (
+          <group key={`pin-${i}`} position={[xPos, 0, zPos]} rotation={rotation}>
+            {/* Pin extending from chip */}
+            <mesh position={[0, -scaleY * 0.15, 0]} castShadow>
+              <boxGeometry args={[0.08, 0.02, scaleY * 0.6]} />
+              <meshStandardMaterial
+                color="#c0c0c0"
+                metalness={0.95}
+                roughness={0.15}
+              />
+            </mesh>
+            {/* Pin bent downward */}
+            <mesh position={[0, -scaleY * 0.45, 0.08]} castShadow>
+              <boxGeometry args={[0.08, 0.02, 0.16]} />
+              <meshStandardMaterial
+                color="#c0c0c0"
+                metalness={0.95}
+                roughness={0.15}
+              />
+            </mesh>
+          </group>
+        );
+      })}
     </group>
   );
 };
