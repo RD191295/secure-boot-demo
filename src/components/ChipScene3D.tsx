@@ -11,7 +11,7 @@ interface ChipScene3DProps {
 }
 
 const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChipClick }) => {
-  const [rotation, setRotation] = useState({ x: -10, y: 15, z: 0 });
+  const [rotation, setRotation] = useState({ x: 0, y: 0, z: 0 });
   const [zoom, setZoom] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const [lastMouse, setLastMouse] = useState({ x: 0, y: 0 });
@@ -26,7 +26,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
       subtitle: 'Hardware Root of Trust',
       description: 'Immutable silicon-based security anchor containing cryptographic keys and boot code burned into the chip during manufacturing.',
       type: 'bootrom' as const,
-      position: { x: 200, y: 500, z: 0 },
+      position: { x: 50, y: 300, z: 100 },
       status: currentStep >= 0 ? 'verified' : 'idle',
       internalComponents: [
         { id: 'efuse', name: 'eFuses', type: 'keys' as const, status: currentStep >= 0 ? 'complete' : 'idle', position: { x: 0, y: 0 } },
@@ -41,7 +41,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
       subtitle: 'Bootloader Storage',
       description: 'External non-volatile memory containing the first-stage bootloader and digital signatures. Initially untrusted until verified.',
       type: 'flash' as const,
-      position: { x: 200, y: 250, z: 0 },
+      position: { x: 450, y: 300, z: 100 },
       status: currentStep >= 2 ? 'verified' : currentStep === 1 ? 'verifying' : 'idle',
       internalComponents: [
         { id: 'fsbl', name: 'FSBL Code', type: 'memory' as const, status: currentStep >= 2 ? 'complete' : currentStep === 1 ? 'processing' : 'idle', position: { x: 0, y: 0 } },
@@ -56,7 +56,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
       subtitle: 'OS/Firmware Execution',
       description: 'Main processing unit running the operating system with hardware security features like MMU and TrustZone.',
       type: 'processor' as const,
-      position: { x: 200, y: 0, z: 0 },
+      position: { x: 850, y: 300, z: 100 },
       status: currentStep >= 4 ? 'verified' : currentStep === 3 ? 'verifying' : 'idle',
       internalComponents: [
         { id: 'kernel', name: 'OS Kernel', type: 'memory' as const, status: currentStep >= 4 ? 'complete' : currentStep === 3 ? 'processing' : 'idle', position: { x: 0, y: 0 } },
@@ -128,7 +128,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
   };
 
   const resetView = () => {
-    setRotation({ x: -10, y: 15, z: 0 });
+    setRotation({ x: 0, y: 0, z: 0 });
     setZoom(1);
   };
 

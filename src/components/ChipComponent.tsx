@@ -42,13 +42,11 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
   const getChipColor = () => {
     switch (type) {
       case 'bootrom':
-        return status === 'verified' ? 'from-blue-500 to-cyan-400' : 'from-blue-600 to-blue-800';
+        return 'from-blue-600 to-blue-800';
       case 'flash':
-        return status === 'verified' ? 'from-green-500 to-emerald-400' : 
-               status === 'verifying' ? 'from-yellow-500 to-orange-400' : 'from-red-500 to-red-700';
+        return 'from-red-600 to-red-800';
       case 'processor':
-        return status === 'verified' ? 'from-purple-500 to-pink-400' : 
-               status === 'verifying' ? 'from-yellow-500 to-orange-400' : 'from-gray-500 to-gray-700';
+        return 'from-gray-600 to-gray-800';
       default:
         return 'from-gray-600 to-gray-800';
     }
@@ -85,20 +83,21 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
   };
 
   const getGlowIntensity = () => {
-    if (status === 'verifying' || isActive) return 'shadow-2xl shadow-cyan-500/50';
-    if (status === 'verified') return 'shadow-xl shadow-green-500/30';
+    if (status === 'verifying' || isActive) return 'shadow-2xl shadow-yellow-500/50';
+    if (status === 'verified') return 'shadow-xl shadow-green-500/40';
     if (isHovered) return 'shadow-xl shadow-blue-500/30';
-    return 'shadow-lg shadow-black/50';
+    return 'shadow-xl shadow-black/50';
   };
 
   return (
     <div
       className="absolute cursor-pointer transition-all duration-500 ease-out"
       style={{
-        transform: `translate3d(${position.x}px, ${position.y}px, ${position.z}px) 
+        transform: `translate3d(${position.x}px, ${position.y}px, ${position.z}px)
                    rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)
                    ${isHovered ? 'scale(1.05)' : 'scale(1)'}`,
-        transformStyle: 'preserve-3d'
+        transformStyle: 'preserve-3d',
+        zIndex: isHovered ? 100 : 10
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
