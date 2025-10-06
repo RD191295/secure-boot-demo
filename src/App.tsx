@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Shield, Play, Pause, RotateCcw, AlertTriangle, CheckCircle } from 'lucide-react';
-import { Chip3DEnvironmentWebGL } from './components/Chip3DEnvironmentWebGL';
+import { Chip3DEnvironment } from './components/Chip3DEnvironment';
 import { useSecureBootState } from './hooks/useSecureBootState';
 
 function App() {
@@ -164,7 +164,7 @@ function App() {
 
       {/* Right Panel - 3D Visualization */}
       <div className="flex-1 pt-24 relative">
-        <Chip3DEnvironmentWebGL
+        <Chip3DEnvironment
           mode={mode}
           showInternals={showInternals}
           animationSpeed={animationSpeed}

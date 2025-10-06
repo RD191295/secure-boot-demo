@@ -21,7 +21,7 @@ export const MODULES: Module[] = [
     id: 'pmu',
     name: 'Power Management Unit',
     type: 'pmu',
-    position: { x: 0, y: 50, z: 0 },
+    position: { x: 50, y: 50, z: 0 },
     size: { width: 210, height: 180, depth: 20 },
     color: 'from-red-800 to-red-600',
     isActive: false,
@@ -32,7 +32,7 @@ export const MODULES: Module[] = [
     name: 'Boot ROM',
     type: 'rom',
     position: { x: 250, y: 50, z: 0 },
-    size: { width: 140, height: 170, depth: 20 },
+    size: { width: 140, height: 120, depth: 20 },
     color: 'from-blue-800 to-blue-600',
     isActive: false,
     description: 'Boot ROM with secure code'
@@ -42,7 +42,7 @@ export const MODULES: Module[] = [
     name: 'OTP/eFuse',
     type: 'otp',
     position: { x: 450, y: 50, z: 0 },
-    size: { width: 180, height: 190, depth: 20 },
+    size: { width: 140, height: 100, depth: 20 },
     color: 'from-orange-800 to-orange-600',
     isActive: false,
     description: 'One-Time Programmable Memory'
@@ -52,7 +52,7 @@ export const MODULES: Module[] = [
     name: 'Crypto Engine',
     type: 'crypto',
     position: { x: 250, y: 250, z: 0 },
-    size: { width: 160, height: 190, depth: 20 },
+    size: { width: 160, height: 140, depth: 20 },
     color: 'from-emerald-800 to-emerald-600',
     isActive: false,
     description: 'Cryptographic accelerator'
@@ -61,8 +61,8 @@ export const MODULES: Module[] = [
     id: 'flash',
     name: 'Flash Memory',
     type: 'flash',
-    position: { x: 50, y: 350, z: 0 },
-    size: { width: 140, height: 180, depth: 20 },
+    position: { x: 50, y: 250, z: 0 },
+    size: { width: 140, height: 120, depth: 20 },
     color: 'from-teal-800 to-teal-600',
     isActive: false,
     description: 'External Flash storage'
@@ -72,7 +72,7 @@ export const MODULES: Module[] = [
     name: 'CPU Core',
     type: 'cpu',
     position: { x: 450, y: 250, z: 0 },
-    size: { width: 160, height: 190, depth: 20 },
+    size: { width: 160, height: 140, depth: 20 },
     color: 'from-blue-800 to-blue-600',
     isActive: false,
     description: 'Main processor'
