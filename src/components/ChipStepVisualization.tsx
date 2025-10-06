@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Play, Pause, SkipForward, SkipBack, Zap, Shield, Key, Lock, Cpu, HardDrive, Settings, CheckCircle, Clock, AlertTriangle } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface ChipStep {
   id: string;
@@ -373,8 +374,8 @@ const ChipStepVisualization: React.FC<ChipStepVisualizationProps> = ({ chipId, c
   }, [isPlaying, currentStep, speed, chipData.steps]);
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 rounded-xl border border-gray-600 max-w-6xl w-full max-h-[95vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: Z_INDEX.MODALS }}>
+      <div className="bg-gray-900 rounded-xl border border-gray-600 max-w-6xl w-full max-h-[95vh] overflow-hidden shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <div className="flex items-center space-x-3">

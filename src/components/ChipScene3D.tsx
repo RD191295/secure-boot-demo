@@ -3,6 +3,7 @@ import ChipComponent from './ChipComponent';
 import DataFlow from './DataFlow';
 import ChipStepVisualization from './ChipStepVisualization';
 import { RotateCcw, ZoomIn, ZoomOut, Info, Eye, EyeOff } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface ChipScene3DProps {
   currentStep: number;
@@ -167,19 +168,20 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
     <>
       <div className="relative w-full h-[600px] bg-gradient-to-br from-gray-900 via-black to-gray-900 rounded-xl overflow-hidden border border-gray-700">
         {/* Grid background */}
-        <div 
-          className="absolute inset-0 opacity-20"
+        <div
+          className="absolute inset-0 opacity-20 pointer-events-none"
           style={{
             backgroundImage: `
               linear-gradient(rgba(59, 130, 246, 0.3) 1px, transparent 1px),
               linear-gradient(90deg, rgba(59, 130, 246, 0.3) 1px, transparent 1px)
             `,
-            backgroundSize: '50px 50px'
+            backgroundSize: '50px 50px',
+            zIndex: Z_INDEX.BACKGROUND
           }}
         />
 
         {/* Controls */}
-        <div className="absolute top-4 right-4 flex space-x-2 z-20">
+        <div className="absolute top-4 right-4 flex space-x-2" style={{ zIndex: Z_INDEX.OVERLAYS }}>
           <button
             onClick={() => setAutoZoomEnabled(!autoZoomEnabled)}
             className={`p-2 rounded-lg border border-gray-600 text-white transition-colors ${
@@ -212,7 +214,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
         </div>
 
         {/* Instructions */}
-        <div className="absolute top-4 left-4 p-3 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-gray-600 text-white z-20">
+        <div className="absolute top-4 left-4 p-3 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-gray-600 text-white" style={{ zIndex: Z_INDEX.OVERLAYS }}>
           <div className="flex items-center space-x-2 mb-2">
             <Info className="w-4 h-4 text-blue-400" />
             <span className="text-sm font-semibold">Chip Interaction Guide</span>
@@ -301,7 +303,7 @@ const ChipScene3D: React.FC<ChipScene3DProps> = ({ currentStep, isPlaying, onChi
         </div>
 
         {/* Floating particles for ambiance */}
-        <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: Z_INDEX.BACKGROUND }}>
           {[...Array(20)].map((_, i) => (
             <div
               key={i}

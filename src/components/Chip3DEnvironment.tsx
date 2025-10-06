@@ -4,6 +4,7 @@ import ModulePopup from './ModulePopup';
 import PCBTrace from './PCBTrace';
 import { useSecureBootState } from '../hooks/useSecureBootState';
 import { MODULES, getModuleById, getBootStatus, Chip3DEnvironmentProps } from './constants';
+import { Z_INDEX } from './zIndex';
 
 export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
   mode,
@@ -61,12 +62,13 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
   return (
     <div className="w-full h-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
       {/* PCB Background Pattern */}
-      <div className="absolute inset-0 opacity-10" style={{
+      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
         backgroundImage: `
           linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
           linear-gradient(90deg, rgba(59, 130, 246, 0.1) 1px, transparent 1px)
         `,
-        backgroundSize: '20px 20px'
+        backgroundSize: '20px 20px',
+        zIndex: Z_INDEX.BACKGROUND
       }} />
 
       {/* Main PCB Container */}
@@ -75,7 +77,7 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
           {/* SVG Layer for PCB Traces */}
           <svg
             className="absolute inset-0 pointer-events-none"
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', zIndex: Z_INDEX.PCB_TRACES }}
             viewBox="0 0 700 500"
           >
             <defs>
@@ -134,7 +136,7 @@ export const Chip3DEnvironment: React.FC<Chip3DEnvironmentProps> = ({
       )}
 
       {/* Boot Status */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2" style={{ zIndex: Z_INDEX.OVERLAYS }}>
         <div className={`px-6 py-3 rounded-lg text-white font-semibold shadow-lg ${bootStatus.color}`}>
           {bootStatus.text}
         </div>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Cpu, Shield, Lock, Key, Zap, HardDrive, Settings, Wifi, Power, Database } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface ChipModuleProps {
   id: string;
@@ -115,11 +116,12 @@ const ChipModule: React.FC<ChipModuleProps> = ({
 
   return (
     <div
-      className="absolute cursor-pointer transition-all duration-300 ease-out z-10"
+      className="absolute cursor-pointer transition-all duration-300 ease-out"
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
-        transform: isHovered ? 'scale(1.05)' : 'scale(1)'
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+        zIndex: isHovered ? Z_INDEX.CHIP_MODULES_HOVER : Z_INDEX.CHIP_MODULES
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}

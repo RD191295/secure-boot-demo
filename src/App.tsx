@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Shield, Play, Pause, RotateCcw, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Chip3DEnvironment } from './components/Chip3DEnvironment';
 import { useSecureBootState } from './hooks/useSecureBootState';
+import { Z_INDEX } from './components/zIndex';
 
 function App() {
   const [mode, setMode] = useState<'normal' | 'tampered'>('normal');
@@ -23,7 +24,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white flex">
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-50 border-b border-gray-700 bg-gray-900/50 backdrop-blur-sm">
+      <header className="absolute top-0 left-0 right-0 border-b border-gray-700 bg-gray-900/50 backdrop-blur-sm" style={{ zIndex: Z_INDEX.HEADER }}>
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-blue-600 rounded-lg">
@@ -163,13 +164,15 @@ function App() {
       </div>
 
       {/* Right Panel - 3D Visualization */}
-      <div className="flex-1 pt-24 relative">
-        <Chip3DEnvironment
-          mode={mode}
-          showInternals={showInternals}
-          animationSpeed={animationSpeed}
-          currentStage={currentStage}
-        />
+      <div className="flex-1 pt-24 relative min-h-screen">
+        <div className="absolute inset-0 pt-4">
+          <Chip3DEnvironment
+            mode={mode}
+            showInternals={showInternals}
+            animationSpeed={animationSpeed}
+            currentStage={currentStage}
+          />
+        </div>
       </div>
     </div>
   );

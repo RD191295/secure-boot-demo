@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, Cpu, Shield, Lock, Key, Zap, HardDrive, Settings, Power, Wifi, Database, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface ModulePopupProps {
   moduleId: string | null;
@@ -164,7 +165,7 @@ const ModulePopup: React.FC<ModulePopupProps> = ({
   const details = getModuleDetails();
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4" style={{ zIndex: Z_INDEX.POPUPS }}>
       <div className="bg-gray-900 rounded-xl border border-gray-600 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">

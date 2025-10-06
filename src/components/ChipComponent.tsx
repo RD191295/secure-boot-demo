@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Cpu, Shield, Lock, Key, Zap, HardDrive, Settings, Eye, EyeOff, ZoomIn } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface ChipComponentProps {
   id: string;
@@ -97,7 +98,7 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
                    rotateX(${rotation.x}deg) rotateY(${rotation.y}deg) rotateZ(${rotation.z}deg)
                    ${isHovered ? 'scale(1.05)' : 'scale(1)'}`,
         transformStyle: 'preserve-3d',
-        zIndex: isHovered ? 100 : 10
+        zIndex: isHovered ? Z_INDEX.CHIP_MODULES_HOVER : Z_INDEX.CHIP_MODULES
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -264,7 +265,7 @@ const ChipComponent: React.FC<ChipComponentProps> = ({
 
       {/* Info panel (appears on hover) */}
       {isHovered && !showInternals && (
-        <div className="absolute top-full left-0 mt-4 w-80 p-4 bg-gray-900/95 backdrop-blur-sm rounded-lg border border-gray-600 shadow-xl z-50">
+        <div className="absolute top-full left-0 mt-4 w-80 p-4 bg-gray-900/95 backdrop-blur-sm rounded-lg border border-gray-600 shadow-xl" style={{ zIndex: Z_INDEX.TOOLTIPS }}>
           <h4 className="text-white font-semibold mb-2">{title}</h4>
           <p className="text-gray-300 text-sm leading-relaxed mb-3">{description}</p>
           <div className="text-xs text-cyan-400">

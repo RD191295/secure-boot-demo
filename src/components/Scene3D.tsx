@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Block3D from './Block3D';
 import VerificationBeam from './VerificationBeam';
 import { RotateCcw, ZoomIn, ZoomOut, Info } from 'lucide-react';
+import { Z_INDEX } from './zIndex';
 
 interface Scene3DProps {
   currentStep: number;
@@ -136,7 +137,7 @@ const Scene3D: React.FC<Scene3DProps> = ({ currentStep, isPlaying, onBlockClick 
       />
 
       {/* Controls */}
-      <div className="absolute top-4 right-4 flex space-x-2 z-20">
+      <div className="absolute top-4 right-4 flex space-x-2" style={{ zIndex: Z_INDEX.OVERLAYS }}>
         <button
           onClick={zoomOut}
           className="p-2 bg-gray-800/80 hover:bg-gray-700/80 rounded-lg border border-gray-600 text-white transition-colors"
@@ -158,7 +159,7 @@ const Scene3D: React.FC<Scene3DProps> = ({ currentStep, isPlaying, onBlockClick 
       </div>
 
       {/* Instructions */}
-      <div className="absolute top-4 left-4 p-3 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-gray-600 text-white z-20">
+      <div className="absolute top-4 left-4 p-3 bg-gray-900/80 backdrop-blur-sm rounded-lg border border-gray-600 text-white" style={{ zIndex: Z_INDEX.OVERLAYS }}>
         <div className="flex items-center space-x-2 mb-2">
           <Info className="w-4 h-4 text-blue-400" />
           <span className="text-sm font-semibold">3D Controls</span>
@@ -236,7 +237,7 @@ const Scene3D: React.FC<Scene3DProps> = ({ currentStep, isPlaying, onBlockClick 
       </div>
 
       {/* Floating particles for ambiance */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none" style={{ zIndex: Z_INDEX.BACKGROUND }}>
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
