@@ -31,7 +31,7 @@ export const MODULES: Module[] = [
     id: 'bootrom',
     name: 'Boot ROM',
     type: 'rom',
-    position: { x: 250, y: 50, z: 0 },
+    position: { x: 280, y: 50, z: 0 },
     size: { width: 140, height: 120, depth: 20 },
     color: 'from-blue-800 to-blue-600',
     isActive: false,
