@@ -41,7 +41,7 @@ export const MODULES: Module[] = [
     id: 'otp',
     name: 'OTP/eFuse',
     type: 'otp',
-    position: { x: 450, y: 50, z: 0 },
+    position: { x: 480, y: 50, z: 0 },
     size: { width: 140, height: 100, depth: 20 },
     color: 'from-orange-800 to-orange-600',
     isActive: false,
